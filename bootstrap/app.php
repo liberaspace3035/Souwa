@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // 認証されていないユーザーをログインページ（/login）にリダイレクト
         $middleware->redirectGuestsTo('/login');
+        
+        // Railwayのプロキシを信頼してHTTPSを正しく検出
+        $middleware->trustProxies(at: '*');
     })
     ->withProviders([
         \App\Providers\AuthServiceProvider::class,
