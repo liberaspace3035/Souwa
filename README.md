@@ -94,10 +94,50 @@ Railwayでこのアプリケーションをデプロイする手順：
    - `APP_URL`: Railwayが自動生成するURLを設定
    - `DB_CONNECTION`: `pgsql`
    - `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: PostgreSQLサービスの接続情報を設定（Railwayが自動設定）
-6. デプロイ後、Railwayのコンソールで以下のコマンドを実行：
+6. デプロイ後、Railwayのコンソール（「Deployments」→「View Logs」→「Shell」タブ）で以下のコマンドを実行：
    ```bash
    php artisan migrate --force
    php artisan storage:link
+   ```
+
+### 500エラーのトラブルシューティング
+
+500エラーが発生する場合、以下を確認してください：
+
+1. **APP_KEYが設定されているか確認**:
+   - Railwayのダッシュボードで「Variables」タブを確認
+   - `APP_KEY`が設定されているか確認
+   - 設定されていない場合は、ローカルで以下を実行してキーを生成：
+     ```bash
+     php artisan key:generate --show
+     ```
+   - 生成されたキーをRailwayの環境変数`APP_KEY`に設定
+
+2. **データベース接続を確認**:
+   - PostgreSQLサービスが正しく接続されているか確認
+   - 環境変数`DB_CONNECTION=pgsql`が設定されているか確認
+   - PostgreSQLサービスの接続情報（`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`）が自動設定されているか確認
+
+3. **マイグレーションを実行**:
+   ```bash
+   php artisan migrate --force
+   ```
+
+4. **ストレージリンクを作成**:
+   ```bash
+   php artisan storage:link
+   ```
+
+5. **ログを確認**:
+   - Railwayの「Deployments」→「View Logs」でエラーログを確認
+   - `APP_DEBUG=true`に設定して（一時的に）、詳細なエラー情報を確認
+
+6. **キャッシュをクリア**:
+   ```bash
+   php artisan config:clear
+   php artisan cache:clear
+   php artisan route:clear
+   php artisan view:clear
    ```
 
 **注意**: RailwayはPHP 8.2（デフォルト）を使用します。composer.lockがリポジトリに含まれていない場合、Railwayのビルド時に自動的に生成されます。
