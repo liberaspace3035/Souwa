@@ -87,8 +87,7 @@ Railwayでこのアプリケーションをデプロイする手順：
 1. Railwayアカウントを作成し、新しいプロジェクトを作成
 2. GitHubリポジトリを接続（またはGitリポジトリを追加）
 3. PostgreSQLサービスを追加（データベース用）
-4. **重要**: Railwayのダッシュボードで環境変数に`PHP_VERSION=8.4`を設定（PHP 8.4が必要なため）
-5. 環境変数を設定：
+4. 環境変数を設定：
    - `APP_KEY`: `php artisan key:generate --show`で生成したキーを設定
    - `APP_ENV`: `production`
    - `APP_DEBUG`: `false`
@@ -101,7 +100,7 @@ Railwayでこのアプリケーションをデプロイする手順：
    php artisan storage:link
    ```
 
-**注意**: このプロジェクトはPHP 8.4を必要とします。Railwayのデフォルト（PHP 8.2）では動作しません。必ず環境変数`PHP_VERSION=8.4`を設定してください。
+**注意**: RailwayはPHP 8.2（デフォルト）を使用します。composer.lockがリポジトリに含まれていない場合、Railwayのビルド時に自動的に生成されます。
 
 ## 技術スタック
 
