@@ -87,13 +87,25 @@ Railwayでこのアプリケーションをデプロイする手順：
 1. Railwayアカウントを作成し、新しいプロジェクトを作成
 2. GitHubリポジトリを接続（またはGitリポジトリを追加）
 3. PostgreSQLサービスを追加（データベース用）
-4. 環境変数を設定：
+4. **重要**: Railwayのダッシュボードで環境変数を設定：
+   - `NIXPACKS_PHP_VERSION`: `8.2` （**必須** - NixpacksがPHPバージョンを検出するために必要）
+   - `NIXPACKS_NODE_VERSION`: `18` （推奨 - Viteを使用している場合）
    - `APP_KEY`: `php artisan key:generate --show`で生成したキーを設定
    - `APP_ENV`: `production`
    - `APP_DEBUG`: `false`
    - `APP_URL`: Railwayが自動生成するURLを設定
    - `DB_CONNECTION`: `pgsql`
-   - `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`: PostgreSQLサービスの接続情報を設定（Railwayが自動設定）
+   
+   **PostgreSQL接続情報の設定**:
+   - PostgreSQLサービスを追加した後、RailwayのダッシュボードでPostgreSQLサービスの「Variables」タブを確認
+   - 以下の環境変数をLaravelサービスに追加（PostgreSQLサービスの環境変数を参照）:
+     - `DB_HOST`: `${{Postgres.PGHOST}}` または PostgreSQLサービスの`PGHOST`の値
+     - `DB_PORT`: `${{Postgres.PGPORT}}` または PostgreSQLサービスの`PGPORT`の値
+     - `DB_DATABASE`: `${{Postgres.PGDATABASE}}` または PostgreSQLサービスの`PGDATABASE`の値
+     - `DB_USERNAME`: `${{Postgres.PGUSER}}` または PostgreSQLサービスの`PGUSER`の値
+     - `DB_PASSWORD`: `${{Postgres.PGPASSWORD}}` または PostgreSQLサービスの`PGPASSWORD`の値
+
+**⚠️ 注意**: `NIXPACKS_PHP_VERSION`は大文字・アンダースコア含め完全一致が必要です。`PHP_VERSION`では動作しません。
 6. デプロイ後、Railwayのコンソール（「Deployments」→「View Logs」→「Shell」タブ）で以下のコマンドを実行：
    ```bash
    php artisan migrate --force
@@ -140,7 +152,12 @@ Railwayでこのアプリケーションをデプロイする手順：
    php artisan view:clear
    ```
 
-**注意**: RailwayはPHP 8.2（デフォルト）を使用します。composer.lockがリポジトリに含まれていない場合、Railwayのビルド時に自動的に生成されます。
+**注意**: 
+- `NIXPACKS_PHP_VERSION=8.2`を環境変数として設定しないと、`secret PHP not found`エラーが発生します（**必須**）
+- composer.lockがPHP 8.4のパッケージにロックされている場合、PHP 8.2では動作しません
+- その場合は、composer.lockを削除して、RailwayのPHP 8.2環境で再生成されます（初回ビルドに時間がかかる場合があります）
+- 環境変数を設定した後、必ずRedeployを実行してください
+- ログに「Installing PHP 8.2」が表示されれば、PHPバージョンの設定は正しく行われています
 
 ## 技術スタック
 
