@@ -170,7 +170,7 @@
     <!-- メインコンテンツエリア -->
     <div class="main-content__container-flex">
         <!-- 左側: 空港選択カード（縦書き） -->
-        <div class="col-md-4 mb-4">
+        <div class="col-12 col-md-4 mb-4">
             <ul class="main-bottom__side">
                 <li class="tokyo">
                     <a href="{{ route('airport.show', 'tokyo') }}">東京成田/羽田機場</a>

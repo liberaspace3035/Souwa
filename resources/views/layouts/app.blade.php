@@ -5,22 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'SOUWA - 厳選最高品質日本食材')</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    @if(env('USE_BOOTSTRAP_CDN', false))
+        {{-- CDN版（本番環境用） --}}
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    @endif
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
     @stack('styles')
 </head>
 <body>
     <nav class="header navbar-expand-lg navbar-light">
         <div class="custom-container">
-            <div class="d-flex justify-content-between w-100 header__content">
+            <div class="d-flex justify-content-between w-100 align-items-center header__content">
                 <!-- 左側: ロゴ -->
                 <a class="header__brand" href="{{ auth()->check() ? route('home') : '/' }}">
                     <img src="{{ asset('images/logo.png') }}" alt="SOUWA" class="header__logo">
                 </a>
                 
+                <!-- モバイル用ハンバーガーメニューボタン -->
+                <button class="navbar-toggler d-lg-none header__mobile-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNavMenu" aria-controls="mobileNavMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
                 <!-- 右側: トップリンクとアクションボタン -->
-                <div class="d-flex flex-column align-items-end">
+                <div class="d-flex flex-column align-items-end d-none d-lg-flex">
                     <!-- トップリンク -->
                     <div class="header__top-links d-none d-md-block">
                         <a href="{{ route('info.japan-direct') }}">日本直送について</a>
@@ -90,6 +98,68 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- モバイル用メニュー -->
+            <div class="collapse navbar-collapse d-lg-none" id="mobileNavMenu">
+                <div class="header__mobile-menu">
+                    <div class="header__mobile-top-links">
+                        <a href="{{ route('info.japan-direct') }}">日本直送について</a>
+                        <span class="header__separator">|</span>
+                        <a class="header__top-links-text--black" href="{{ route('info.follow') }}">フォローする</a>
+                        <div class="social-icons">
+                            <a href="https://www.facebook.com/souwajapan/" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="https://www.instagram.com/souwa.offical/#" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                            <a href="https://www.youtube.com/channel/UCpRVF0xQGoWAvixeuQP8wFg/#" target="_blank" title="YouTube"><i class="bi bi-youtube"></i></a>
+                        </div>
+                    </div>
+                    <div class="header__mobile-action-buttons">
+                        @auth
+                            <div class="dropdown">
+                                <a href="#" class="header__mobile-action-btn dropdown-toggle" id="userMenuDropdownMobile" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{{ asset('images/icon-person.png') }}" alt="ユーザーメニュー" class="header__icon">
+                                    <span>{{ auth()->user()->name ?? 'ユーザー' }}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdownMobile">
+                                    @if(auth()->user()->isAdmin())
+                                        <li><h6 class="dropdown-header">管理メニュー</h6></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.products.index') }}"><i class="bi bi-box-seam"></i> 商品管理</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.news.index') }}"><i class="bi bi-newspaper"></i> ニュース管理</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    @endif
+                                    <li><a class="dropdown-item" href="{{ route('home') }}"><i class="bi bi-house"></i> ホーム</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> ログアウト</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <a href="{{ route('cart.index') }}" class="header__mobile-action-btn">
+                                <img src="{{ asset('images/icon-cart.png') }}" alt="カート" class="header__icon">
+                                <span>カート</span>
+                                @if(auth()->user()->cartItems()->count() > 0)
+                                    <span class="badge bg-danger">{{ auth()->user()->cartItems()->count() }}</span>
+                                @endif
+                            </a>
+                        @else
+                            <a href="#" class="header__mobile-action-btn" data-bs-toggle="modal" data-bs-target="#loginChoiceModal">
+                                <img src="{{ asset('images/icon-person.png') }}" alt="ログイン・登録" class="header__icon">
+                                <span>ログイン</span>
+                            </a>
+                            <a href="{{ route('cart.index') }}" class="header__mobile-action-btn">
+                                <img src="{{ asset('images/icon-cart.png') }}" alt="カート" class="header__icon">
+                                <span>カート</span>
+                            </a>
+                        @endauth
+                        <a href="{{ route('info.about-sowa') }}" class="header__mobile-action-btn header__mobile-action-btn--about">
+                            <img src="{{ asset('images/icon-about.png') }}" alt="SOUWAについて" class="header__icon">
+                            <span>SOUWA</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -112,13 +182,13 @@
     <div class="custom-container">
     <div class="header__selection-bar">
             <div class="header__selection-bar-content">
-                <div class="col-md-3">
+                <div class="col-md-3 col-12">
                     <div class="selection-bar__left-text">
                         <div>精選最優質日本食材</div>
                         <div>批发直送</div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-12">
                     <div class="selection-bar__options">
                         <div class="selection-bar__option">
                             <span>選擇發貨機場</span>
@@ -134,7 +204,7 @@
                                 <a href="{{ route('airport.show', 'okinawa') }}" class="dropdown-item">沖繩那霸機場</a>
                             </div>
                         </div>
-                        <div class="selection-bar__separator"></div>
+                        <div class="selection-bar__separator d-none d-md-block"></div>
                         <div class="selection-bar__option">
                             <span>選擇食材種類</span>
                             <button class="selection-bar__circle-btn">
@@ -153,7 +223,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 text-end">
+                <div class="col-md-3 col-12 text-center text-md-end">
                     <div class="header__logo-small">
                         <img src="{{ asset('images/icon-SOUWA.png') }}" alt="SOUWA" class="header__logo--small">
                     </div>
@@ -302,7 +372,10 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @if(env('USE_BOOTSTRAP_CDN', false))
+        {{-- CDN版（本番環境用） --}}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @endif
     @stack('scripts')
     
     @if(!auth()->check() && ($errors->has('email') || $errors->has('password') || session('error')))

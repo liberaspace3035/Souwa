@@ -3,104 +3,201 @@
 @section('title', 'ショッピングカート')
 
 @section('content')
-<div class="container my-5">
-    <h1 class="mb-4">ショッピングカート</h1>
+<div class="cart-page">
+    <div class="container my-5">
+        <!-- ページヘッダー -->
+        <div class="cart-page__header mb-5">
+            <h1 class="cart-page__title">ショッピングカート</h1>
+            <p class="cart-page__subtitle">{{ $cartItems->count() }}点の商品</p>
+        </div>
 
-    @if($cartItems->count() > 0)
+        @if($cartItems->count() > 0)
         <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        @foreach($cartItems as $cartItem)
-                            <div class="row align-items-center mb-4 pb-4 border-bottom">
-                                <div class="col-md-2">
-                                    @if($cartItem->product->image)
-                                        <img src="{{ asset('storage/' . $cartItem->product->image) }}" 
-                                             class="img-fluid rounded" 
-                                             alt="{{ $cartItem->product->name }}"
-                                             style="height: 100px; width: 100%; object-fit: cover;">
-                                    @else
-                                        <div class="bg-light d-flex align-items-center justify-content-center rounded" 
-                                             style="height: 100px;">
-                                            <i class="bi bi-image" style="font-size: 2rem; color: #ccc;"></i>
-                                        </div>
-                                    @endif
+            <!-- カートアイテム一覧 -->
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="cart-items">
+                    @foreach($cartItems as $cartItem)
+                    <div class="cart-item">
+                        <!-- 商品画像 -->
+                        <div class="cart-item__image-wrapper">
+                            @if($cartItem->product->image)
+                                <img 
+                                    src="{{ asset('storage/' . $cartItem->product->image) }}" 
+                                    class="cart-item__image" 
+                                    alt="{{ $cartItem->product->name }}"
+                                    loading="lazy"
+                                >
+                            @else
+                                <div class="cart-item__image-placeholder">
+                                    <i class="bi bi-image cart-item__image-icon"></i>
                                 </div>
-                                <div class="col-md-4">
-                                    <h5 class="mb-1">{{ $cartItem->product->name }}</h5>
-                                    <p class="text-muted mb-1 small">{{ $cartItem->product->category }}</p>
-                                    <p class="text-muted mb-0 small">¥{{ number_format($cartItem->product->price) }}</p>
-                                </div>
-                                <div class="col-md-3">
-                                    <form action="{{ route('cart.update', $cartItem) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="input-group" style="max-width: 150px;">
-                                            <input type="number" 
-                                                   class="form-control" 
-                                                   name="quantity" 
-                                                   value="{{ $cartItem->quantity }}" 
-                                                   min="1" 
-                                                   required>
-                                            <button type="submit" class="btn btn-outline-secondary btn-sm">
-                                                <i class="bi bi-arrow-repeat"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <p class="mb-1 fw-bold">¥{{ number_format($cartItem->product->price * $cartItem->quantity) }}</p>
-                                </div>
-                                <div class="col-md-1 text-end">
-                                    <form action="{{ route('cart.destroy', $cartItem) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                                class="btn btn-link text-danger p-0" 
-                                                onclick="return confirm('この商品をカートから削除しますか？')">
-                                            <i class="bi bi-trash" style="font-size: 1.2rem;"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                            @endif
+                        </div>
+
+                        <!-- 商品情報 -->
+                        <div class="cart-item__info">
+                            <h3 class="cart-item__name">
+                                <a href="{{ route('products.show', $cartItem->product->id) }}" class="cart-item__name-link">
+                                    {{ $cartItem->product->name }}
+                                </a>
+                            </h3>
+                            @if($cartItem->product->category)
+                            <div class="cart-item__category">
+                                <i class="bi bi-tag-fill"></i>
+                                <span>{{ $cartItem->product->category }}</span>
                             </div>
-                        @endforeach
+                            @endif
+                            <div class="cart-item__price">
+                                <span class="cart-item__price-label">単価:</span>
+                                <span class="cart-item__price-value">¥{{ number_format($cartItem->product->price) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- 数量入力 -->
+                        <div class="cart-item__quantity">
+                            <label class="cart-item__quantity-label">数量</label>
+                            <form action="{{ route('cart.update', $cartItem) }}" method="POST" class="cart-item__quantity-form">
+                                @csrf
+                                @method('PUT')
+                                <div class="quantity-input-wrapper">
+                                    <button type="button" class="quantity-btn quantity-btn--minus" onclick="decreaseQuantity(this, {{ $cartItem->product->stock }})">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <input 
+                                        type="number" 
+                                        class="form-control quantity-input" 
+                                        name="quantity" 
+                                        value="{{ $cartItem->quantity }}" 
+                                        min="1" 
+                                        max="{{ $cartItem->product->stock }}"
+                                        required
+                                        onchange="this.form.submit()"
+                                        onblur="validateQuantity(this, {{ $cartItem->product->stock }})"
+                                    >
+                                    <button type="button" class="quantity-btn quantity-btn--plus" onclick="increaseQuantity(this, {{ $cartItem->product->stock }})">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 小計 -->
+                        <div class="cart-item__subtotal">
+                            <div class="cart-item__subtotal-label">小計</div>
+                            <div class="cart-item__subtotal-value">
+                                ¥{{ number_format($cartItem->product->price * $cartItem->quantity) }}
+                            </div>
+                        </div>
+
+                        <!-- 削除ボタン -->
+                        <div class="cart-item__actions">
+                            <form action="{{ route('cart.destroy', $cartItem) }}" method="POST" class="cart-item__delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button 
+                                    type="submit" 
+                                    class="cart-item__delete-btn"
+                                    onclick="return confirm('この商品をカートから削除しますか？')"
+                                    title="カートから削除"
+                                >
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title mb-4">合計金額</h5>
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>小計:</span>
-                            <span>¥{{ number_format($total) }}</span>
+
+            <!-- 合計・アクション -->
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <div class="cart-summary__header">
+                        <h3 class="cart-summary__title">合計金額</h3>
+                    </div>
+                    <div class="cart-summary__body">
+                        <div class="cart-summary__row">
+                            <span class="cart-summary__label">小計（{{ $cartItems->count() }}点）:</span>
+                            <span class="cart-summary__value">¥{{ number_format($total) }}</span>
                         </div>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-4">
-                            <strong>合計:</strong>
-                            <strong class="h5 mb-0">¥{{ number_format($total) }}</strong>
+                        <div class="cart-summary__divider"></div>
+                        <div class="cart-summary__total">
+                            <span class="cart-summary__total-label">合計:</span>
+                            <span class="cart-summary__total-value">
+                                <span class="cart-summary__total-symbol">¥</span>
+                                {{ number_format($total) }}
+                            </span>
                         </div>
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('quotations.create') }}" class="btn btn-primary btn-lg">
-                                見積もりを作成
-                            </a>
-                            <a href="{{ route('home') }}" class="btn btn-outline-secondary">
-                                買い物を続ける
-                            </a>
-                        </div>
+                    </div>
+                    <div class="cart-summary__actions">
+                        <a href="{{ route('quotations.create') }}" class="btn btn-create-quotation">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span>見積もりを作成</span>
+                        </a>
+                        <a href="{{ route('home') }}" class="btn btn-continue-shopping">
+                            <i class="bi bi-arrow-left"></i>
+                            <span>買い物を続ける</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    @else
-        <div class="card">
-            <div class="card-body text-center py-5">
-                <i class="bi bi-cart-x" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
-                <h5 class="mb-3">カートは空です</h5>
-                <p class="text-muted mb-4">商品をカートに追加してください</p>
-                <a href="{{ route('home') }}" class="btn btn-primary">商品を見る</a>
+        @else
+        <!-- 空のカート -->
+        <div class="cart-empty">
+            <div class="cart-empty__content">
+                <i class="bi bi-cart-x cart-empty__icon"></i>
+                <h3 class="cart-empty__title">カートは空です</h3>
+                <p class="cart-empty__message">商品をカートに追加して、見積もりを作成しましょう</p>
+                <a href="{{ route('home') }}" class="btn btn-browse-products">
+                    <i class="bi bi-box-seam"></i>
+                    <span>商品を見る</span>
+                </a>
             </div>
         </div>
-    @endif
+        @endif
+    </div>
 </div>
+
+@push('scripts')
+<script>
+function increaseQuantity(button, maxStock) {
+    const form = button.closest('form');
+    const input = form.querySelector('.quantity-input');
+    const current = parseInt(input.value) || 1;
+    if (current < maxStock) {
+        input.value = current + 1;
+        input.dispatchEvent(new Event('change'));
+    }
+}
+
+function decreaseQuantity(button, maxStock) {
+    const form = button.closest('form');
+    const input = form.querySelector('.quantity-input');
+    const current = parseInt(input.value) || 1;
+    if (current > 1) {
+        input.value = current - 1;
+        input.dispatchEvent(new Event('change'));
+    }
+}
+
+function validateQuantity(input, maxStock) {
+    const min = parseInt(input.getAttribute('min'));
+    let value = parseInt(input.value) || min;
+    
+    if (value > maxStock) {
+        value = maxStock;
+        alert(`在庫が${maxStock}点のみです。`);
+    } else if (value < min) {
+        value = min;
+    }
+    
+    if (value !== parseInt(input.value)) {
+        input.value = value;
+        input.form.submit();
+    }
+}
+</script>
+@endpush
+
 @endsection
