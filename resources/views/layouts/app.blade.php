@@ -141,14 +141,14 @@
                                 <i class="bi bi-chevron-right"></i>
                             </button>
                             <div class="selection-bar__dropdown">
-                                <a href="#" class="dropdown-item">新鮮野菜</a>
-                                <a href="#" class="dropdown-item">美味しい果物</a>
-                                <a href="#" class="dropdown-item">肉類</a>
-                                <a href="#" class="dropdown-item">卵・乳製品</a>
-                                <a href="#" class="dropdown-item">蜂蜜・茶類</a>
-                                <a href="#" class="dropdown-item">魚類・海鮮</a>
-                                <a href="#" class="dropdown-item">米・穀類</a>
-                                <a href="#" class="dropdown-item">調味料・加工品</a>
+                                <a href="{{ route('category.show', 'fresh-vegetables') }}" class="dropdown-item">新鮮野菜</a>
+                                <a href="{{ route('category.show', 'fruits') }}" class="dropdown-item">美味しい果物</a>
+                                <a href="{{ route('category.show', 'meat') }}" class="dropdown-item">肉類</a>
+                                <a href="{{ route('category.show', 'eggs-dairy') }}" class="dropdown-item">卵・乳製品</a>
+                                <a href="{{ route('category.show', 'honey-tea') }}" class="dropdown-item">蜂蜜・茶類</a>
+                                <a href="{{ route('category.show', 'seafood') }}" class="dropdown-item">魚類・海鮮</a>
+                                <a href="{{ route('category.show', 'rice-grains') }}" class="dropdown-item">米・穀類</a>
+                                <a href="{{ route('category.show', 'seasonings-processed') }}" class="dropdown-item">調味料・加工品</a>
                             </div>
                         </div>
                     </div>

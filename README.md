@@ -106,12 +106,45 @@ Railwayでこのアプリケーションをデプロイする手順：
      - `DB_PASSWORD`: `${{Postgres.PGPASSWORD}}` または PostgreSQLサービスの`PGPASSWORD`の値
 
 **⚠️ 注意**: `NIXPACKS_PHP_VERSION`は大文字・アンダースコア含め完全一致が必要です。`PHP_VERSION`では動作しません。
-6. デプロイ後、Railwayのコンソール（「Deployments」→「View Logs」→「Shell」タブ）で以下のコマンドを実行：
+
+6. **初回デプロイ後のセットアップ**（**手動実行が必要**）:
+   
+   デプロイが完了したら、以下のいずれかの方法でコマンドを実行：
+   
+   **方法1: Railway CLIを使用（推奨）**
+   ```bash
+   # Railway CLIをインストール（未インストールの場合）
+   npm install -g @railway/cli
+   
+   # Railwayにログイン
+   railway login
+   
+   # プロジェクトにリンク
+   railway link
+   
+   # WEBサービス（Laravelアプリケーション）を選択してコマンドを実行
+   railway run --service <WEB_SERVICE_NAME> php artisan migrate --force
+   railway run --service <WEB_SERVICE_NAME> php artisan storage:link
+   railway run --service <WEB_SERVICE_NAME> php artisan db:seed --class=AdminUserSeeder
+   ```
+   
+   **⚠️ 重要**: `--service`オプションで**WEBサービス（Laravelアプリケーション）**を指定してください。PostgreSQLサービスではありません。
+   
+   **方法2: Railwayダッシュボードから実行**
+   - Railwayのダッシュボードでサービスの「Settings」→「Deploy」セクションを確認
+   - 「Run Command」または「Execute Command」などのオプションがある場合は、そこから実行
+   - または、「View Logs」から一時的にコマンドを実行できる場合があります
+   
+   **実行するコマンド**:
    ```bash
    php artisan migrate --force
    php artisan storage:link
    php artisan db:seed --class=AdminUserSeeder
    ```
+   
+   **注意**: 
+   - これらのコマンドは**初回デプロイ後のみ**実行してください
+   - `AdminUserSeeder`は`firstOrCreate`を使用しているため、既にアカウントが存在する場合は新規作成されません
 
    **管理者アカウント情報**（シーダー実行後）:
    - Email: `admin@souwa.com`

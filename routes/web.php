@@ -9,6 +9,7 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\AirportController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // 公開ページ（認証不要）
@@ -21,6 +22,9 @@ Route::get('/info/about-sowa', [InfoController::class, 'aboutSowa'])->name('info
 
 // 空港別商品ページ（認証不要）
 Route::get('/airport/{airport}', [AirportController::class, 'show'])->name('airport.show');
+
+// カテゴリ別商品ページ（認証不要）
+Route::get('/category/{category}', [CategoryController::class, 'show'])->name('category.show');
 
 // Authentication Routes (認証不要)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
