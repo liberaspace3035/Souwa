@@ -53,7 +53,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
                                     @if(auth()->user()->isAdmin())
                                         <li><h6 class="dropdown-header">管理メニュー</h6></li>
-                                        <li><a class="dropdown-item" href="{{ route('admin.products.index') }}"><i class="bi bi-box-seam"></i> 商品管理</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.products.index') }}"><i class="bi bi-sliders"></i> 商品管理</a></li>
                                         <li><a class="dropdown-item" href="{{ route('admin.news.index') }}"><i class="bi bi-newspaper"></i> ニュース管理</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     @endif
@@ -122,7 +122,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdownMobile">
                                     @if(auth()->user()->isAdmin())
                                         <li><h6 class="dropdown-header">管理メニュー</h6></li>
-                                        <li><a class="dropdown-item" href="{{ route('admin.products.index') }}"><i class="bi bi-box-seam"></i> 商品管理</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.products.index') }}"><i class="bi bi-sliders"></i> 商品管理</a></li>
                                         <li><a class="dropdown-item" href="{{ route('admin.news.index') }}"><i class="bi bi-newspaper"></i> ニュース管理</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     @endif

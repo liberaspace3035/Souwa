@@ -150,7 +150,7 @@
                 <h3 class="cart-empty__title">カートは空です</h3>
                 <p class="cart-empty__message">商品をカートに追加して、見積もりを作成しましょう</p>
                 <a href="{{ route('home') }}" class="btn btn-browse-products">
-                    <i class="bi bi-box-seam"></i>
+                    <i class="bi bi-shop"></i>
                     <span>商品を見る</span>
                 </a>
             </div>
