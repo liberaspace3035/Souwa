@@ -157,6 +157,7 @@
         <div class="products-page__results">
             @if($products->count() > 0)
             <div class="products-grid">
+                @dd($products);
                 @foreach($products as $product)
                 <div class="product-card">
                     <a href="{{ route('products.show', $product->id) }}" class="product-card__link">

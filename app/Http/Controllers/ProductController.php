@@ -87,6 +87,7 @@ class ProductController extends Controller
             $attributes['is_limited'] = $product->is_limited;
             $attributes['is_new'] = $product->is_new;
             $attributes['price'] = $product->price;
+            $attributes['image_url'] = $product->image_url;
             
             return (object) $attributes;
         });
