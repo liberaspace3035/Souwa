@@ -22,7 +22,7 @@
                         <div class="cart-item__image-wrapper">
                             @if($cartItem->product->image)
                                 <img 
-                                    src="{{ asset('storage/' . $cartItem->product->image) }}" 
+                                    src="{{ $cartItem->product->image_url }}" 
                                     class="cart-item__image" 
                                     alt="{{ $cartItem->product->name }}"
                                     loading="lazy"

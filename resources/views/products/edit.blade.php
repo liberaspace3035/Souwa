@@ -38,7 +38,7 @@
             <label for="image" class="form-label">商品画像</label>
             @if($product->image)
                 <div class="mb-2">
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-thumbnail" style="max-width: 200px;">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="img-thumbnail" style="max-width: 200px;">
                 </div>
             @endif
             <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">

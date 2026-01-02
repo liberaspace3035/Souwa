@@ -83,7 +83,7 @@
                     </div>
                     <div class="news__image--right">
                         @if($latestNews && $latestNews->image)
-                            <img src="{{ asset('storage/' . $latestNews->image) }}" alt="{{ $latestNews->title }}" class="news__large-image">
+                            <img src="{{ $latestNews->image_url }}" alt="{{ $latestNews->title }}" class="news__large-image">
                         @else
                             <div class="news__image--placeholder-large">
                                 <i class="bi bi-image image-placeholder__icon--large"></i>

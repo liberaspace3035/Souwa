@@ -59,7 +59,8 @@ class NewsController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('news', 'public');
+            $disk = config('filesystems.images', 'public');
+            $validated['image'] = $request->file('image')->store('news', $disk);
         }
 
         $validated['is_published'] = $request->has('is_published');
@@ -104,10 +105,11 @@ class NewsController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+            $disk = config('filesystems.images', 'public');
             if ($news->image) {
-                Storage::disk('public')->delete($news->image);
+                Storage::disk($disk)->delete($news->image);
             }
-            $validated['image'] = $request->file('image')->store('news', 'public');
+            $validated['image'] = $request->file('image')->store('news', $disk);
         }
 
         $validated['is_published'] = $request->has('is_published');
@@ -123,7 +125,8 @@ class NewsController extends Controller
     public function destroy(News $news)
     {
         if ($news->image) {
-            Storage::disk('public')->delete($news->image);
+            $disk = config('filesystems.images', 'public');
+            Storage::disk($disk)->delete($news->image);
         }
 
         $news->delete();

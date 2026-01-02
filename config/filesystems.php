@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Image Storage Disk
+    |--------------------------------------------------------------------------
+    |
+    | This option controls which filesystem disk should be used for storing
+    | uploaded images. You can set this to 'public' for local storage or
+    | 's3' for cloud storage (R2). Set IMAGE_STORAGE_DISK environment variable.
+    |
+    */
+
+    'images' => env('IMAGE_STORAGE_DISK', 'public'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |

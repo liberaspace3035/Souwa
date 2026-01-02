@@ -55,7 +55,7 @@
                                 <td class="admin-table__td admin-table__td--id">{{ $item->id }}</td>
                                 <td class="admin-table__td admin-table__td--image">
                                     @if($item->image)
-                                        <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="admin-table__thumbnail">
+                                        <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="admin-table__thumbnail">
                                     @else
                                         <div class="admin-table__thumbnail admin-table__thumbnail--placeholder">
                                         </div>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -25,6 +26,19 @@ class Product extends Model
         'is_limited' => 'boolean',
         'is_new' => 'boolean',
     ];
+
+    /**
+     * 画像URLを取得
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        $disk = config('filesystems.images', 'public');
+        return Storage::disk($disk)->url($this->image);
+    }
 
     public function cartItems()
     {

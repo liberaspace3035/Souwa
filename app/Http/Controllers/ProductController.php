@@ -183,12 +183,14 @@ class ProductController extends Controller
     {
         // 画像アップロード処理
         if ($request->hasFile('image')) {
+            $disk = config('filesystems.images', 'public');
+            
             // 更新時は既存の画像を削除
             if ($product && $product->image) {
-                Storage::disk('public')->delete($product->image);
+                Storage::disk($disk)->delete($product->image);
             }
             
-            $validated['image'] = $request->file('image')->store('products', 'public');
+            $validated['image'] = $request->file('image')->store('products', $disk);
         }
 
         // チェックボックスのフラグを処理
@@ -205,7 +207,8 @@ class ProductController extends Controller
     private function deleteProductImage(Product $product): void
     {
         if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+            $disk = config('filesystems.images', 'public');
+            Storage::disk($disk)->delete($product->image);
         }
     }
 }

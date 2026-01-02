@@ -164,7 +164,7 @@
                         <div class="product-card__image-wrapper">
                             @if($product->image)
                                 <img 
-                                    src="{{ asset('storage/' . $product->image) }}" 
+                                    src="{{ $product->image_url }}" 
                                     class="product-card__image" 
                                     alt="{{ $product->name }}"
                                     loading="lazy"
