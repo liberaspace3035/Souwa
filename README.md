@@ -95,6 +95,7 @@ Railwayでこのアプリケーションをデプロイする手順：
    - `APP_DEBUG`: `false`
    - `APP_URL`: Railwayが自動生成するURLを**HTTPS**で設定（例: `https://web-production-xxxxx.up.railway.app`）
    - `DB_CONNECTION`: `pgsql`
+   - `USE_BOOTSTRAP_CDN`: `true` （オプション - CDNからBootstrapを読み込む場合。デフォルトは`false`でローカル版を使用）
    
    **PostgreSQL接続情報の設定**:
    - PostgreSQLサービスを追加した後、RailwayのダッシュボードでPostgreSQLサービスの「Variables」タブを確認
@@ -202,8 +203,24 @@ Railwayでこのアプリケーションをデプロイする手順：
 
 - **フレームワーク**: Laravel 12
 - **PDF生成**: DomPDF (barryvdh/laravel-dompdf)
-- **フロントエンド**: Bootstrap 5
+- **フロントエンド**: Bootstrap 5（ローカル版 / CDN版の切り替え可能）
 - **データベース**: SQLite（デフォルト） / PostgreSQL（本番環境推奨）
+
+### Bootstrapの使用方法
+
+このプロジェクトでは、Bootstrapをローカル版とCDN版の両方に対応しています：
+
+- **デフォルト（開発環境）**: ローカル版を使用（オフライン対応）
+  - `npm install`でインストールされたBootstrapとBootstrap Iconsを使用
+  - Viteでビルドして配信
+
+- **本番環境（Railwayなど）**: 環境変数`USE_BOOTSTRAP_CDN=true`を設定するとCDN版を使用
+  - CDNからBootstrapを読み込むため、ビルド時間が短縮されます
+  - インターネット接続が必要です
+
+**環境変数の設定**:
+- `.env`ファイルに`USE_BOOTSTRAP_CDN=true`を追加するとCDN版を使用
+- 設定しない、または`false`の場合はローカル版を使用
 
 ## ライセンス
 
