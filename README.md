@@ -93,7 +93,7 @@ Railwayでこのアプリケーションをデプロイする手順：
    - `APP_KEY`: `php artisan key:generate --show`で生成したキーを設定
    - `APP_ENV`: `production`
    - `APP_DEBUG`: `false`
-   - `APP_URL`: Railwayが自動生成するURLを設定
+   - `APP_URL`: Railwayが自動生成するURLを**HTTPS**で設定（例: `https://web-production-xxxxx.up.railway.app`）
    - `DB_CONNECTION`: `pgsql`
    
    **PostgreSQL接続情報の設定**:
@@ -110,7 +110,13 @@ Railwayでこのアプリケーションをデプロイする手順：
    ```bash
    php artisan migrate --force
    php artisan storage:link
+   php artisan db:seed --class=AdminUserSeeder
    ```
+
+   **管理者アカウント情報**（シーダー実行後）:
+   - Email: `admin@souwa.com`
+   - Password: `password`
+   - ⚠️ **重要**: 本番環境では、ログイン後すぐにパスワードを変更してください
 
 ### 500エラーのトラブルシューティング
 
