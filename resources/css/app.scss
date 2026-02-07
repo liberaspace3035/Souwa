@@ -12,7 +12,8 @@
 @import 'bootstrap/scss/bootstrap';
 
 // Bootstrap Icons - フォントパスを修正（インポート前に変数を上書き）
-$bootstrap-icons-font-dir: "/build/assets/fonts" !default;
+// 開発モードでは /fonts、本番モードでは /build/assets/fonts を使用
+$bootstrap-icons-font-dir: "/fonts" !default;
 $bootstrap-icons-font-hash: "" !default; // ハッシュを削除してクエリパラメータを無効化
 @import 'bootstrap-icons/font/bootstrap-icons.scss';
 
@@ -5106,6 +5107,10 @@ select.form-select {
         filter: brightness(0) invert(1);
         display: block;
         margin: 0 auto;
+
+        @media (max-width: 768px) {
+            max-width: 130px;
+        }
     }
 
     &__title-container {
@@ -5119,7 +5124,7 @@ select.form-select {
         border-bottom: 1px solid white;
 
         @media (max-width: 768px) {
-            font-size: 32px;
+            font-size: 27px;
         }
 
         &--highlight {
@@ -5131,7 +5136,7 @@ select.form-select {
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 
             @media (max-width: 768px) {
-                font-size: 32px;
+                font-size: 27px;
             }
 
             .modal__title-text--highlight {
